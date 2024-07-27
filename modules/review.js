@@ -6,6 +6,8 @@ const reviewSchema = new mongoose.Schema({
     rating: { type: Number, required: true, min: 1, max: 5 },
     comment: { type: String, required: true },
     title:{ type: String, required: true},
+    name:{ type: String, required: true},
+    profilePic:{ type: String, required: true},
     createdAt: { type: Date, default: Date.now }
 }, {versionKey:false})
 
