@@ -190,31 +190,38 @@ export const DeleteProduct = async (req, res) => {
 
 
 //get products by category
-
-export const getProductsByCategory = async (req, res) => {
+// Get all products in the same category as the product with the given ID
+export const getProductsByCategoryId = async (req, res) => {
     try {
-         const productCategory = await Product.distinct("category")
-         
-         //array to store one product from each category
-         const productByCategory = []
+        // Extract the product ID from query parameters
+        const { id } = req.params;
 
-         for (const category of productCategory) {
-             const product = await Product.findOne({ category })
+        // Find the product with the given ID
+        const product = await Product.findById(id);
 
-             if(product){
-                 productByCategory.push(product)
-             }
-         }
+        // If the product is not found, return an error response
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found",
+                success: false
+            });
+        }
 
-         res.status(200).json({
-             message: "product by catagory",
-             success: true,
-             data: productByCategory
-         })
+        // Find all products in the same category as the found product
+        const productsInSameCategory = await Product.find({ category: product.category });
 
-         console.log('category',productCategory)
+        // Respond with the products in the same category
+        res.status(200).json({
+            message: "Products in the same category",
+            success: true,
+            data: productsInSameCategory
+        });
+
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        res.status(500).json({
+            message: "An error occurred",
+            success: false
+        });
     }
 }
-
