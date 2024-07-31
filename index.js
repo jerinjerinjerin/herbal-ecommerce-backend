@@ -7,6 +7,7 @@ import connectDb from "./config/db.js";
 import userRoute from "./routes/user.route.js";
 import productRoute from './routes/product.route.js'
 import ReviewRoute from './routes/productreview.route.js'
+import addToCart from './routes/addToCart.route.js'
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use("/api", userRoute);
 app.use('/api', productRoute);
 app.use('/api', ReviewRoute);
+app.use('/api', addToCart);
 
 const PORT = process.env.PORT || 8080;
 
