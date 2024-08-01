@@ -76,3 +76,25 @@ export const CountAddToCartProduct = async(req,res)=>{
     }
 }
 
+//view product in cart
+
+export const addToCartViewProduct = async (req, res) => {
+    try {
+        const currentUser = req.userId;
+
+        const allProducts = await AddToCart.find({ userId: currentUser }).populate('productId');
+
+        res.json({
+            data: allProducts,
+            success: true,
+            error: false
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'An error occurred while retrieving the cart products.',
+            error: true,
+            success: false
+        });
+    }
+};
