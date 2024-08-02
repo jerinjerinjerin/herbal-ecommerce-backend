@@ -98,3 +98,98 @@ export const addToCartViewProduct = async (req, res) => {
         });
     }
 };
+
+//update product quantity in cart
+
+export const updateAddToCartProduct = async (req, res) => {
+    try {
+      const currentUserId = req.userId;
+  
+      if (!currentUserId) {
+        return res.status(401).json({
+          message: "Login to shop now",
+          error: true,
+          success: false,
+        });
+      }
+  
+      const addToCartProductId = req.body._id;
+      const qty = req.body.quantity;
+  
+      if (!addToCartProductId || qty === undefined) {
+        return res.status(400).json({
+          message: "Product ID and quantity are required",
+          error: true,
+          success: false,
+        });
+      }
+  
+      const updateProduct = await AddToCart.updateOne(
+        { _id: addToCartProductId, userId: currentUserId },
+        {
+          ...(qty && { quantity: qty }),
+        }
+      );
+  
+      if (updateProduct.nModified === 0) {
+        return res.status(404).json({
+          message: "Product not found or no changes made",
+          error: true,
+          success: false,
+        });
+      }
+  
+      res.json({
+        message: "Product Updated",
+        data: updateProduct,
+        error: false,
+        success: true,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: err.message || "Internal Server Error",
+        error: true,
+        success: false,
+      });
+    }
+  };
+
+
+
+  //product delete cart
+export const deleteAddToCartProduct = async (req, res) => {
+  try {
+    const currentUserId = req.userId;
+    const addToCartProductId = req.body._id;
+
+    console.log("User ID:", currentUserId); // Log the user ID
+    console.log("Product ID:", addToCartProductId); // Log the product ID
+
+    const deleteProduct = await AddToCart.deleteOne({ _id: addToCartProductId });
+
+    console.log("Delete Result:", deleteProduct); // Log the result of deletion
+
+    if (deleteProduct.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Product not found in cart.",
+        error: true,
+        success: false,
+      });
+    }
+
+    res.json({
+      message: "Product deleted from cart",
+      error: false,
+      success: true,
+      data: deleteProduct
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err?.message || "An error occurred",
+      error: true,
+      success: false
+    });
+  }
+};
+
+  
