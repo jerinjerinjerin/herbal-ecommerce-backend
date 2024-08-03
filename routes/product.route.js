@@ -5,6 +5,7 @@ import {
     GetProduct, 
     GetProducts, 
     getProductsByCategoryId, 
+    searchProduct, 
     updateProduct
 } from '../controller/product.controller.js';
 import authToken from '../middleware/authToken.js';
@@ -21,6 +22,6 @@ router.delete('/delete-product/:id',authToken, DeleteProduct)
 router.get('/single-product/:id', GetProduct)
 router.get('/getall-products', GetProducts)
 router.get('/get-product-category/:id', getProductsByCategoryId)
-
+router.get('/search-products', searchProduct)
 
 export default router;
