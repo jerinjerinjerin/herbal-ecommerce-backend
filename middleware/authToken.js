@@ -6,7 +6,7 @@ async function authToken(req, res, next) {
 
         if (!token) {
             return res.status(400).json({
-                message: "User not found",
+                message: "User not found please login to continue",
                 error: true,
                 success: false
             });
