@@ -5,9 +5,7 @@ export const paymentController = async (req, res) => {
   try {
     const { cartItems } = req.body;
 
-    console.log('cartItems', cartItems);
 
-    // Check if cartItems is provided and is an array
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({
         message: "Cart items are missing or invalid.",
@@ -33,25 +31,28 @@ export const paymentController = async (req, res) => {
       billing_address_collection: "auto",
       shipping_options: [
         {
-          shipping_rate: "shr_1PlV3O2LzrSrf98ZZNCYX5PJ", // Ensure this is a valid shipping rate ID
+          shipping_rate: "shr_1PlV3O2LzrSrf98ZZNCYX5PJ",
         },
       ],
       customer_email: user.email,
+      metadata: {
+        userId: req.userId,
+      },
       line_items: cartItems.map((item) => ({
         price_data: {
           currency: "usd",
           product_data: {
             name: item.productId.productName,
-            images: item.productId.productImage, // Ensure this is an array of image URLs
+            images: item.productId.productImage,
             metadata: {
-              productId: item.productId._id.toString(), // Ensure metadata is serializable
+              productId: item.productId._id.toString(),
             },
           },
-          unit_amount: item.productId.sellingPrice * 10, // Amount in cents
+          unit_amount: item.productId.sellingPrice * 100,
         },
         adjustable_quantity: {
           enabled: true,
-          minimum: 1, // Correct spelling
+          minimum: 1,
         },
         quantity: item.quantity,
       })),
@@ -61,9 +62,9 @@ export const paymentController = async (req, res) => {
 
     const session = await stripe.checkout.sessions.create(params);
 
-    res.status(200).json({ id: session.id }); // Use 200 status and return session ID
+    res.status(200).json({ id: session.id });
   } catch (error) {
-    console.error("Payment error:", error); // Log error for debugging
+    console.error("Payment error:", error);
     res.status(500).json({
       message: error.message || "Internal Server Error",
       error: true,

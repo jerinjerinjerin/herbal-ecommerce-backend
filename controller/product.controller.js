@@ -261,3 +261,31 @@ export const searchProduct = async(req,res)=>{
     }
 }
 
+
+export const getCategoryWiseProduct = async(req,res)=>{
+    try{
+        const { category } = req?.body || req?.query
+        if(!category){
+            return res.status(400).json({
+                message : "Category is required",
+                success : false,
+                error : true
+            })  // return 400 if no category is provided.
+        }
+        const product = await Product.find({ category })
+
+        res.json({
+            data : product,
+            message : "Product",
+            success : true,
+            error : false
+        })
+    }catch(err){
+        res.status(400).json({
+            message : err.message || err,
+            error : true,
+            success : false
+        })
+    }
+}
+
