@@ -1,15 +1,13 @@
 import express from 'express';
-import { 
-    paymentController 
-} from '../controller/payment.controller.js';
+import { paymentController, webhooks } from '../controller/payment.controller.js';
 import authToken from '../middleware/authToken.js';
-import { webhooks } from '../controller/webhook.js';
-const app = express();
-app.use(express.raw({ type: 'application/json' }));
+
 const router = express.Router();
 
+// Apply the raw body parser specifically for the webhook route
+router.post('/webhook', express.raw({ type: 'application/json' }), webhooks);
 
-router.post('/checkout',authToken,paymentController);
-router.post('/webhook',authToken, webhooks)//api weebhook
+// Other routes can use JSON parser or other middleware as needed
+router.post('/checkout', authToken, paymentController);
 
 export default router;
